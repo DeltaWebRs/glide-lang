@@ -104,6 +104,10 @@ function genEntranceExit(node, defaultEase, defaultDuration) {
   const { kind, selector, properties, propsBlock } = node;
   const sel      = JSON.stringify(selector);
   const anim     = buildAnimProps(properties, propsBlock);
+  const effectNode = properties['effect'];
+  if (effectNode && !EFFECT_PRESETS[effectNode.value] && Object.keys(anim).length === 0 && !propsBlock) {
+    console.warn(`[Glide] Unknown effect "${effectNode.value}" on ${selector}`);
+  }
   const duration = nodeToNumber(properties['duration']) ?? defaultDuration;
   const ease     = resolveEase(properties['ease'], defaultEase);
   const gsapProps = { ...anim, duration, ease };
@@ -117,6 +121,10 @@ function genScroll(node, defaultEase, defaultDuration) {
   const { selector, properties, propsBlock } = node;
   const sel      = JSON.stringify(selector);
   const anim     = buildAnimProps(properties, propsBlock);
+  const effectNode = properties['effect'];
+  if (effectNode && !EFFECT_PRESETS[effectNode.value] && Object.keys(anim).length === 0 && !propsBlock) {
+    console.warn(`[Glide] Unknown effect "${effectNode.value}" on ${selector}`);
+  }
   const duration = nodeToNumber(properties['duration']) ?? defaultDuration;
   const ease     = resolveEase(properties['ease'], defaultEase);
 
@@ -276,7 +284,8 @@ function gen3D(node, defaultEase, defaultDuration) {
     return [`gsap.to(${sel}, ${serializeBlock({ z, duration, ease })});`, ''];
   }
 
-  return [`// 3d effect "${effect}" not recognized`, ''];
+  console.warn(`[Glide] Unknown 3d effect "${effect}" on ${selector}`);
+  return [`// [Glide] Unknown 3d effect "${effect}" — skipped`, ''];
 }
 
 function genTransition(node, defaultEase, defaultDuration) {
@@ -450,7 +459,8 @@ function genSVG(node, defaultEase, defaultDuration, plugins) {
     return [`gsap.to(${sel}, ${serializeBlock(gsapProps)});`, ''];
   }
 
-  return [`// svg effect "${effect}" not recognized`, ''];
+  console.warn(`[Glide] Unknown svg effect "${effect}" on ${selector}`);
+  return [`// [Glide] Unknown svg effect "${effect}" — skipped`, ''];
 }
 
 function genSpring(node, defaultDuration) {
@@ -492,6 +502,9 @@ function genLoop(node, defaultEase, defaultDuration) {
 
   // Inline properties path
   const anim   = buildAnimProps(properties, node.propsBlock);
+  if (effect && !LOOP_PRESETS[effect] && Object.keys(anim).length === 0) {
+    return [`// [Glide] Unknown loop effect "${effect}" — skipped`, ''];
+  }
   const yoyo   = yoyoNode ? yoyoNode.value === true || yoyoNode.value === 'true' : false;
   const gsapProps = { ...anim, duration, ease, repeat: -1 };
   if (yoyo) gsapProps.yoyo = true;
@@ -548,7 +561,8 @@ function genText(node, defaultEase, defaultDuration, plugins) {
     ];
   }
 
-  return [`// text effect "${effect}" not recognized`, ''];
+  console.warn(`[Glide] Unknown text effect "${effect}" on ${selector}`);
+  return [`// [Glide] Unknown text effect "${effect}" — skipped`, ''];
 }
 
 // ─── main export ──────────────────────────────────────────────────────────────
@@ -566,6 +580,9 @@ function generate(ast) {
     if (p['reduced-motion'])   reducedMotion   = p['reduced-motion'].value === 'respect' || p['reduced-motion'].value === true;
   }
 
+  const lastTransition = [...ast.body].reverse()
+    .find(n => n.type === 'AnimationBlock' && n.kind === 'transition');
+
   const plugins    = new Set();
   const animLines  = [];
   for (const node of ast.body) {
@@ -578,7 +595,7 @@ function generate(ast) {
       else if (kind === 'click')   animLines.push(...genClick(node, defaultEase, defaultDuration));
       else if (kind === 'stagger') animLines.push(...genStagger(node, defaultEase, defaultDuration));
       else if (kind === 'threed')     animLines.push(...gen3D(node, defaultEase, defaultDuration));
-      else if (kind === 'transition') animLines.push(...genTransition(node, defaultEase, defaultDuration));
+      else if (kind === 'transition') { /* deduped — emitted once after loop */ }
       else if (kind === 'cursor')     animLines.push(...genCursor(node, defaultEase));
       else if (kind === 'svg')     animLines.push(...genSVG(node, defaultEase, defaultDuration, plugins));
       else if (kind === 'spring')  animLines.push(...genSpring(node, defaultDuration));
@@ -587,6 +604,9 @@ function generate(ast) {
     } else if (node.type === 'TimelineBlock') {
       animLines.push(...genTimeline(node, defaultEase, defaultDuration));
     }
+  }
+  if (lastTransition) {
+    animLines.push(...genTransition(lastTransition, defaultEase, defaultDuration));
   }
 
   const pluginLines = plugins.size > 0

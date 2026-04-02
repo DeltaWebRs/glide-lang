@@ -1,0 +1,162 @@
+// edge-cases.glide — comprehensive edge case testing
+
+// ─── 1. Config block sa svim opcijama ─────────────────────────────────────────
+config {
+  default-ease: elastic
+  default-duration: 0.35s
+  reduced-motion: respect
+}
+
+// ─── 2. Prazni blokovi ────────────────────────────────────────────────────────
+entrance .empty-entrance {}
+exit .empty-exit {}
+hover .empty-hover {}
+click .empty-click {}
+scroll .empty-scroll {}
+
+// ─── 3. Svi ease aliasi ───────────────────────────────────────────────────────
+entrance .ease-smooth {
+  effect: fade
+  ease: smooth
+  duration: 0.5s
+}
+entrance .ease-snap {
+  effect: fade
+  ease: snap
+  duration: 0.5s
+}
+entrance .ease-bounce {
+  effect: fade
+  ease: bounce
+  duration: 0.5s
+}
+entrance .ease-elastic {
+  effect: fade
+  ease: elastic
+  duration: 0.5s
+}
+entrance .ease-back {
+  effect: fade
+  ease: back
+  duration: 0.5s
+}
+entrance .ease-linear {
+  effect: fade
+  ease: linear
+  duration: 0.5s
+}
+
+// ─── 4. Svi effect preseti ────────────────────────────────────────────────────
+entrance .preset-fade        { effect: fade }
+entrance .preset-fadeUp      { effect: fadeUp }
+entrance .preset-fadeDown    { effect: fadeDown }
+entrance .preset-fadeLeft    { effect: fadeLeft }
+entrance .preset-fadeRight   { effect: fadeRight }
+entrance .preset-zoomIn      { effect: zoomIn }
+entrance .preset-popIn       { effect: popIn }
+entrance .preset-slideUp     { effect: slideUp }
+entrance .preset-slideDown   { effect: slideDown }
+
+// ─── 5. Nepoznate effect vrednosti ────────────────────────────────────────────
+entrance .unknown-effect {
+  effect: flyInFromMars
+  duration: 0.6s
+}
+loop .unknown-loop {
+  effect: spinForever
+  duration: 1s
+}
+3d .unknown-3d {
+  effect: hologram
+  duration: 0.8s
+}
+
+// ─── 6. Negativne vrednosti ───────────────────────────────────────────────────
+entrance .negative-x {
+  x: -100
+  y: -50
+  opacity: 0
+  duration: 0.6s
+}
+scroll .negative-parallax {
+  y: -200
+  trigger: "top bottom"
+  scrub: true
+}
+
+// ─── 7. Decimalne vrednosti ───────────────────────────────────────────────────
+entrance .decimal-duration {
+  effect: fadeUp
+  duration: 0.35s
+  delay: 0.05s
+}
+stagger .decimal-stagger {
+  effect: fadeUp
+  each: 0.05s
+  duration: 0.35s
+}
+
+// ─── 8. properties blok kombinovan sa duration i ease ─────────────────────────
+entrance .props-combo {
+  properties {
+    opacity: 0
+    x: -100
+    y: -50
+    scale: 0.9
+  }
+  duration: 0.8s
+  ease: back
+  delay: 0.15s
+}
+
+exit .props-exit-combo {
+  properties {
+    opacity: 0
+    y: 30
+  }
+  duration: 0.4s
+  ease: smooth
+}
+
+// ─── 9. Stagger sa decimalnim each i negativnim y ─────────────────────────────
+stagger .items {
+  effect: fadeUp
+  each: 0.08s
+  duration: 0.6s
+  ease: back
+  from: center
+}
+
+// ─── 10. Hover sa negativnim x i decimalnim duration ─────────────────────────
+hover .card-hover {
+  x: -5
+  y: -5
+  scale: 1.05
+  duration: 0.25s
+  ease: back
+}
+
+// ─── 11. Click sa properties blokom ──────────────────────────────────────────
+click .btn-click {
+  properties {
+    scale: 0.95
+    opacity: 0.8
+  }
+  duration: 0.15s
+  ease: linear
+}
+
+// ─── 12. Scroll sa svim opcijama ─────────────────────────────────────────────
+scroll .full-scroll {
+  effect: fadeUp
+  trigger: "top 75%"
+  duration: 0.7s
+  ease: smooth
+}
+
+scroll .scrub-full {
+  y: -150
+  trigger: "top bottom"
+  end: "bottom top"
+  scrub: true
+}
