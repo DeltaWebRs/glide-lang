@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glide Compiler — Browser Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      color: #7c6aff;
+      margin-bottom: 6px;
+    }
+    .subtitle-header {
+      color: #4a5568;
+      font-size: 0.85rem;
+      margin-bottom: 40px;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #4a5568;
+      margin: 32px 0 10px;
+      border-bottom: 1px solid #1a1d2e;
+      padding-bottom: 6px;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .box {
+      width: 160px;
+      height: 80px;
+      background: #1a1d2e;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #a0aec0;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    .box .tag {
+      font-size: 0.65rem;
+      color: #7c6aff;
+      margin-top: 4px;
+    }
+
+    /* SVG container boxes */
+    .svg-box {
+      width: 160px;
+      height: 80px;
+      background: #1a1d2e;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    /* 3D flip parent needs perspective */
+    .flip-wrapper {
+      perspective: 1000px;
+    }
+
+    /* Loop items need some initial visible state */
+    .spinner-wrap, .pulse-wrap, .bounce-wrap, .breathe-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      background: #1a1d2e;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+    }
+
+    /* Custom cursor (hidden by default, shown on move) */
+    .custom-cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: #7c6aff;
+      border-radius: 50%;
+      pointer-events: none;
+      top: -20px;
+      left: -20px;
+      z-index: 9998;
+    }
+    .cursor-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: #63b3ed;
+      border-radius: 50%;
+      pointer-events: none;
+      top: -8px;
+      left: -8px;
+      z-index: 9997;
+    }
+    .trail-dot {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: #68d391;
+      border-radius: 50%;
+      pointer-events: none;
+      top: -6px;
+      left: -6px;
+      z-index: 9996;
+    }
+
+    /* Tall spacer so scroll animations can trigger */
+    .spacer { height: 60vh; }
+
+    #log {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-height: 160px;
+      overflow-y: auto;
+      background: #0a0c12;
+      border-top: 1px solid #1a1d2e;
+      padding: 8px 12px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      z-index: 10000;
+    }
+    #log .ok   { color: #68d391; }
+    #log .warn { color: #f6ad55; }
+    #log .err  { color: #fc8181; }
+    #log .info { color: #63b3ed; }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────────────────────────── -->
+  <h1>Glide Compiler — Browser Test</h1>
+  <p class="subtitle-header">Učitava <code>test/examples/full-test.js</code> i testira sve GSAP animacije</p>
+
+  <!-- ── 2. ENTRANCE ───────────────────────────────────────────────────────── -->
+  <div class="section-label">Entrance</div>
+  <div class="grid">
+    <div class="box hero"><span>.hero</span><span class="tag">fadeUp</span></div>
+    <div class="box intro"><span>.intro</span><span class="tag">zoomIn</span></div>
+  </div>
+
+  <!-- ── 3. EXIT ───────────────────────────────────────────────────────────── -->
+  <div class="section-label">Exit</div>
+  <div class="grid">
+    <div class="box modal"><span>.modal</span><span class="tag">fadeOut</span></div>
+    <div class="box banner"><span>.banner</span><span class="tag">slideDown</span></div>
+  </div>
+
+  <!-- ── 4. SCROLL ─────────────────────────────────────────────────────────── -->
+  <div class="section-label">Scroll (skroluj da vidiš)</div>
+  <div class="spacer"></div>
+  <div class="grid">
+    <div class="box section"><span>.section</span><span class="tag">fadeUp on scroll</span></div>
+    <div class="box parallax"><span>.parallax</span><span class="tag">parallax scrub</span></div>
+  </div>
+  <div class="spacer"></div>
+
+  <!-- ── 5. HOVER ──────────────────────────────────────────────────────────── -->
+  <div class="section-label">Hover (pređi mišem)</div>
+  <div class="grid">
+    <div class="box card"><span>.card</span><span class="tag">scale hover</span></div>
+    <div class="box nav-link"><span>.nav-link</span><span class="tag">opacity hover</span></div>
+  </div>
+
+  <!-- ── 6. CLICK ──────────────────────────────────────────────────────────── -->
+  <div class="section-label">Click (klikni)</div>
+  <div class="grid">
+    <div class="box burger"><span>.burger</span><span class="tag">rotate 45°</span></div>
+    <div class="box toggle"><span>.toggle</span><span class="tag">scale 0.95</span></div>
+  </div>
+
+  <!-- ── 7. STAGGER ────────────────────────────────────────────────────────── -->
+  <div class="section-label">Stagger</div>
+  <div class="grid">
+    <div class="box grid-item"><span>.grid-item</span><span class="tag">1</span></div>
+    <div class="box grid-item"><span>.grid-item</span><span class="tag">2</span></div>
+    <div class="box grid-item"><span>.grid-item</span><span class="tag">3</span></div>
+    <div class="box grid-item"><span>.grid-item</span><span class="tag">4</span></div>
+    <div class="box list-item"><span>.list-item</span><span class="tag">A</span></div>
+    <div class="box list-item"><span>.list-item</span><span class="tag">B</span></div>
+    <div class="box list-item"><span>.list-item</span><span class="tag">C</span></div>
+  </div>
+
+  <!-- ── 8. TEXT ───────────────────────────────────────────────────────────── -->
+  <div class="section-label">Text</div>
+  <div class="grid" style="flex-direction:column;gap:8px;">
+    <div class="box title"   style="width:400px;height:50px;font-size:1rem;">.title — Glide typewriter effect</div>
+    <div class="box subtitle" style="width:400px;height:50px;font-size:1rem;">.subtitle — Reveal clip-path</div>
+    <div class="box chars"   style="width:400px;height:50px;font-size:1rem;">.chars — Split letters</div>
+    <div class="box words"   style="width:400px;height:50px;font-size:1rem;">.words — Split words animation</div>
+  </div>
+
+  <!-- ── 9. SVG ────────────────────────────────────────────────────────────── -->
+  <div class="section-label">SVG</div>
+  <div class="grid">
+    <div class="svg-box">
+      <svg width="120" height="60" viewBox="0 0 120 60">
+        <path class="logo-path" d="M10,50 Q30,10 60,30 Q90,50 110,10"
+              fill="none" stroke="#7c6aff" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="svg-box">
+      <svg width="120" height="60" viewBox="0 0 120 60">
+        <path class="logo-delayed" d="M10,30 C30,10 90,10 110,30 C90,50 30,50 10,30"
+              fill="none" stroke="#63b3ed" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="svg-box">
+      <svg width="120" height="60" viewBox="0 0 120 60" id="morph-svg">
+        <path class="blob" d="M60,10 C80,10 100,30 100,50 C100,70 80,70 60,70 C40,70 20,50 20,30 C20,10 40,10 60,10Z"
+              fill="#68d391"/>
+        <path id="blob-2" d="M60,5 C90,5 110,25 110,55 C110,75 90,80 60,80 C30,80 10,60 10,30 C10,10 30,5 60,5Z"
+              fill="none"/>
+      </svg>
+    </div>
+    <div class="svg-box">
+      <svg width="120" height="60" viewBox="0 0 120 60">
+        <path class="dashed-line" d="M10,30 L110,30"
+              fill="none" stroke="#f6ad55" stroke-width="3"
+              stroke-dasharray="10 5"/>
+      </svg>
+    </div>
+    <!-- morph #shape-a / #shape-b -->
+    <div class="svg-box">
+      <svg width="120" height="60" viewBox="0 0 120 60">
+        <path class="shape-a" d="M20,10 L100,10 L100,50 L20,50 Z"
+              fill="#fc8181"/>
+        <path id="shape-b" d="M60,5 C95,5 115,30 95,55 C75,75 45,75 25,55 C5,30 25,5 60,5Z"
+              fill="none"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ── 10. LOOP ──────────────────────────────────────────────────────────── -->
+  <div class="section-label">Loop (kontinuirano)</div>
+  <div class="grid">
+    <div class="spinner-wrap">
+      <div class="box spinner" style="width:50px;height:50px;border-radius:50%;border:3px solid #7c6aff;border-top-color:transparent;background:transparent;">
+      </div>
+    </div>
+    <div class="pulse-wrap">
+      <div class="box pulse-dot" style="width:40px;height:40px;border-radius:50%;background:#fc8181;border:none;"></div>
+    </div>
+    <div class="bounce-wrap">
+      <div class="box bouncer" style="width:40px;height:40px;border-radius:50%;background:#68d391;border:none;"></div>
+    </div>
+    <div class="breathe-wrap">
+      <div class="box breathe" style="width:50px;height:50px;border-radius:8px;background:#63b3ed;border:none;"></div>
+    </div>
+  </div>
+
+  <!-- ── 11. TIMELINE ──────────────────────────────────────────────────────── -->
+  <div class="section-label">Timeline (pageLoad sequence)</div>
+  <div class="grid">
+    <div class="box logo"><span>.logo</span><span class="tag">fade</span></div>
+    <div class="box nav"><span>.nav</span><span class="tag">slideDown +0.3s</span></div>
+    <div class="box headline"><span>.headline</span><span class="tag">fadeUp 1s</span></div>
+    <div class="box cta"><span>.cta</span><span class="tag">popIn bounce</span></div>
+  </div>
+
+  <!-- ── 13. SPRING / PHYSICS ──────────────────────────────────────────────── -->
+  <div class="section-label">Spring / Physics</div>
+  <div class="grid">
+    <div class="box ball"><span>.ball</span><span class="tag">spring y:300</span></div>
+    <div class="box elastic-box"><span>.elastic-box</span><span class="tag">spring scale</span></div>
+    <div class="box panel"><span>.panel</span><span class="tag">spring x:400</span></div>
+  </div>
+
+  <!-- ── 14. CURSOR ────────────────────────────────────────────────────────── -->
+  <div class="section-label">Cursor (pomjeri miš)</div>
+  <div class="grid">
+    <div class="box cta-btn"><span>.cta-btn</span><span class="tag">magnetic target</span></div>
+  </div>
+  <!-- cursor elements — fixed positioned -->
+  <div class="custom-cursor"></div>
+  <div class="cursor-dot"></div>
+  <div class="trail-dot"></div>
+
+  <!-- ── 15. 3D ────────────────────────────────────────────────────────────── -->
+  <div class="section-label">3D</div>
+  <div class="grid">
+    <div class="flip-wrapper">
+      <div class="box flip-card"><span>.flip-card</span><span class="tag">flip rotationY</span></div>
+    </div>
+    <div class="box cube"><span>.cube</span><span class="tag">rotate3d</span></div>
+    <div class="box product-card"><span>.product-card</span><span class="tag">tilt (hover)</span></div>
+    <div class="box scene"><span>.scene</span><span class="tag">depth z</span></div>
+  </div>
+
+  <!-- ── TRANSITION overlay ────────────────────────────────────────────────── -->
+  <div id="glide-overlay"></div>
+
+  <!-- ── Log panel ─────────────────────────────────────────────────────────── -->
+  <div id="log"><span class="info">▶ Inicijalizacija...</span></div>
+
+  <div style="height:80px;"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- GSAP free plugins from CDN                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+
+  <script>
+    // ── Log helper ───────────────────────────────────────────────────────────
+    const logEl = document.getElementById('log');
+    function log(msg, type = 'info') {
+      const span = document.createElement('span');
+      span.className = type;
+      span.textContent = msg;
+      logEl.appendChild(document.createElement('br'));
+      logEl.appendChild(span);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // ── Intercept console.warn ───────────────────────────────────────────────
+    const _warn = console.warn.bind(console);
+    console.warn = (...args) => { _warn(...args); log('⚠ ' + args.join(' '), 'warn'); };
+
+    const _error = console.error.bind(console);
+    console.error = (...args) => { _error(...args); log('✗ ' + args.join(' '), 'err'); };
+
+    // ── Stubs za premium GSAP plugine (nisu dostupni na CDN bez licence) ─────
+    // MorphSVGPlugin stub — registruje se ali ne radi morph
+    window.MorphSVGPlugin = {
+      version: 'stub',
+      name: 'morphSVG',
+    };
+
+    // SplitText stub — vraća prazne arrays da ne baci ReferenceError
+    window.SplitText = class SplitText {
+      constructor(selector, opts) {
+        log(`SplitText stub: ${selector} (${opts && opts.type}) — premium plugin`, 'warn');
+        const els = Array.from(document.querySelectorAll(selector));
+        this.chars = els;
+        this.words = els;
+        this.lines = els;
+      }
+    };
+
+    // Registruj ScrollTrigger i TextPlugin
+    gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+    log('✓ GSAP ' + gsap.version + ' učitan', 'ok');
+    log('✓ ScrollTrigger učitan', 'ok');
+    log('✓ TextPlugin učitan', 'ok');
+    log('⚠ MorphSVGPlugin — stub (premium)', 'warn');
+    log('⚠ SplitText — stub (premium)', 'warn');
+  </script>
+
+  <!-- ── Kompajlirani Glide output ─────────────────────────────────────────── -->
+  <script>
+    try {
+      // Inline the compiled output to avoid CORS issues with file:// protocol
+      // The script below is the content of full-test.js evaluated here.
+      // NOTE: When serving via HTTP, replace this with:
+      //   <script src="examples/full-test.js"><\/script>
+      log('▶ Učitavanje full-test.js...', 'info');
+    } catch(e) {}
+  </script>
+  <script src="examples/full-test.js" onerror="log('✗ Nije moguće učitati full-test.js — otvori HTML via HTTP server, ne file://', 'err')"></script>
+
+  <script>
+    // ── Post-load provjera ───────────────────────────────────────────────────
+    window.addEventListener('load', () => {
+      // Provjeri da li su animacije pokrenute
+      const animCount = gsap.globalTimeline.getChildren(true, true, true).length;
+      log(`✓ Učitavanje završeno — ${animCount} GSAP animacija aktivno`, 'ok');
+
+      // ScrollTrigger instanci
+      const stCount = ScrollTrigger.getAll().length;
+      log(`✓ ScrollTrigger instanci: ${stCount}`, 'ok');
+
+      if (animCount === 0) {
+        log('⚠ Nula animacija — provjeri da li prefers-reduced-motion nije aktivan', 'warn');
+      }
+    });
+
+    window.addEventListener('error', (e) => {
+      log('✗ JS greška: ' + e.message + ' (' + (e.filename || '').split('/').pop() + ':' + e.lineno + ')', 'err');
+    });
+  </script>
+
+</body>
+</html>

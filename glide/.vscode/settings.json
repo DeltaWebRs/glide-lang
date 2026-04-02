@@ -1,0 +1,19 @@
+{
+  "workbench.colorTheme": "Glide Dark",
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "constant.numeric.glide",
+        "settings": {
+          "foreground": "#b794f4"
+        }
+      },
+      {
+        "scope": "keyword.other.unit.glide",
+        "settings": {
+          "foreground": "#76e4f7"
+        }
+      }
+    ]
+  }
+}

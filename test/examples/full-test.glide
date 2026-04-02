@@ -1,0 +1,244 @@
+// full-test.glide — testira SVE kategorije Glide kompajlera
+
+// ─── 1. CONFIG ────────────────────────────────────────────────────────────────
+config {
+  default-ease: smooth
+  default-duration: 0.6s
+  reduced-motion: respect
+}
+
+// ─── 2. ENTRANCE ─────────────────────────────────────────────────────────────
+entrance .hero {
+  effect: fadeUp
+  duration: 0.8s
+  delay: 0.2s
+  ease: smooth
+}
+
+entrance .intro {
+  effect: zoomIn
+  duration: 1s
+  ease: back
+}
+
+// ─── 3. EXIT ─────────────────────────────────────────────────────────────────
+exit .modal {
+  effect: fadeOut
+  duration: 0.4s
+  ease: smooth
+}
+
+exit .banner {
+  effect: slideDown
+  duration: 0.5s
+}
+
+// ─── 4. SCROLL ───────────────────────────────────────────────────────────────
+scroll .section {
+  effect: fadeUp
+  trigger: "top 80%"
+  duration: 0.8s
+}
+
+scroll .parallax {
+  y: -150
+  trigger: "top bottom"
+  end: "bottom top"
+  scrub: true
+}
+
+// ─── 5. HOVER ────────────────────────────────────────────────────────────────
+hover .card {
+  scale: 1.05
+  duration: 0.3s
+  ease: back
+}
+
+hover .nav-link {
+  opacity: 0.7
+  duration: 0.2s
+}
+
+// ─── 6. CLICK ────────────────────────────────────────────────────────────────
+click .burger {
+  rotate: 45
+  duration: 0.3s
+  ease: smooth
+}
+
+click .toggle {
+  scale: 0.95
+  duration: 0.15s
+}
+
+// ─── 7. STAGGER ──────────────────────────────────────────────────────────────
+stagger .grid-item {
+  effect: fadeUp
+  each: 0.1s
+  from: start
+  ease: smooth
+}
+
+stagger .list-item {
+  effect: slideUp
+  each: 0.08s
+}
+
+// ─── 8. TEXT ─────────────────────────────────────────────────────────────────
+text .title {
+  effect: typewriter
+  duration: 2s
+}
+
+text .subtitle {
+  effect: reveal
+  duration: 0.8s
+  ease: smooth
+}
+
+text .chars {
+  effect: splitLetters
+  each: 0.05s
+  ease: back
+}
+
+text .words {
+  effect: splitWords
+  each: 0.08s
+  ease: smooth
+}
+
+// ─── 9. SVG ──────────────────────────────────────────────────────────────────
+svg .logo-path {
+  effect: draw
+  duration: 1.5s
+  ease: smooth
+}
+
+svg .logo-delayed {
+  effect: draw
+  duration: 2s
+  delay: 0.5s
+}
+
+svg .blob {
+  effect: morph
+  to: "#blob-2"
+  duration: 1s
+  ease: smooth
+}
+
+svg .dashed-line {
+  effect: dash
+  duration: 1.5s
+  ease: linear
+}
+
+// ─── 10. LOOP ────────────────────────────────────────────────────────────────
+loop .spinner {
+  rotate: 360
+  duration: 1s
+  ease: linear
+}
+
+loop .pulse-dot {
+  effect: pulse
+  duration: 1.2s
+}
+
+loop .bouncer {
+  effect: bounce
+  duration: 0.8s
+}
+
+loop .breathe {
+  scale: 1.1
+  duration: 2s
+  ease: smooth
+  yoyo: true
+}
+
+// ─── 11. TIMELINE ────────────────────────────────────────────────────────────
+timeline pageLoad {
+  step { target: .logo,     effect: fade }
+  step { target: .nav,      effect: slideDown, delay: 0.3s }
+  step { target: .headline, effect: fadeUp,    duration: 1s }
+  step { target: .cta,      effect: popIn,     ease: bounce }
+}
+
+// ─── 12. MORPH (kao SVG sub-efekat — standalone "morph" nije keyword) ────────
+svg .shape-a {
+  effect: morph
+  to: "#shape-b"
+  duration: 0.8s
+}
+
+// ─── 13. PHYSICS / SPRING ────────────────────────────────────────────────────
+spring .ball {
+  y: 300
+  stiffness: 120
+  damping: 8
+}
+
+spring .elastic-box {
+  scale: 1.2
+  stiffness: 200
+  damping: 20
+  mass: 1.5
+}
+
+spring .panel {
+  x: 400
+  stiffness: 80
+  damping: 12
+}
+
+// ─── 14. CURSOR ──────────────────────────────────────────────────────────────
+cursor .custom-cursor {
+  effect: follow
+  speed: 0.1
+  ease: smooth
+}
+
+cursor .cursor-dot {
+  effect: magnetic
+  target: ".cta-btn"
+  strength: 0.4
+}
+
+cursor .trail-dot {
+  effect: trail
+  ease: linear
+}
+
+// ─── 15. 3D ──────────────────────────────────────────────────────────────────
+3d .flip-card {
+  effect: flip
+  duration: 0.6s
+  ease: smooth
+}
+
+3d .cube {
+  effect: rotate3d
+  rotateX: 30
+  rotateY: 60
+  duration: 1s
+}
+
+3d .product-card {
+  effect: tilt
+  strength: 15
+}
+
+3d .scene {
+  effect: depth
+  z: -300
+  duration: 0.8s
+}
+
+// ─── 16. PAGE TRANSITION ─────────────────────────────────────────────────────
+transition page {
+  effect: curtain
+  duration: 0.6s
+  ease: snap
+}

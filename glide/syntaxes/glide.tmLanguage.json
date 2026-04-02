@@ -1,0 +1,136 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Glide",
+  "scopeName": "source.glide",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#blocks" },
+    { "include": "#keywords" },
+    { "include": "#properties" },
+    { "include": "#values" },
+    { "include": "#selectors" },
+    { "include": "#numbers" },
+    { "include": "#strings" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.glide",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.glide",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.glide",
+          "match": "\\b(entrance|exit|scroll|hover|click|stagger|text|svg|morph|loop|cursor|timeline|sequence|page|transition|physics|spring|on|from|to|then|after|when|with|for|each|repeat|reverse|pause|play|stop|infinite)\\b"
+        },
+        {
+          "name": "keyword.operator.glide",
+          "match": "[+\\-*/=<>!&|]|->|=>"
+        }
+      ]
+    },
+    "properties": {
+      "patterns": [
+        {
+          "name": "support.type.property-name.glide",
+          "match": "\\b(effect|duration|delay|ease|opacity|x|y|scale|rotation|skew|origin|trigger|start|end|scrub|pin|stagger|from|to|color|background|width|height|blur|brightness|contrast|distance|angle|strength|mass|damping|velocity|direction|axis|perspective|depth|cursor|target|steps|yoyo|paused|overwrite|force3D|clearProps)\\b(?=\\s*:)"
+        }
+      ]
+    },
+    "values": {
+      "patterns": [
+        {
+          "name": "support.constant.glide",
+          "match": "\\b(fadeUp|fadeDown|fadeLeft|fadeRight|fadeIn|fadeOut|fade|zoomIn|zoomOut|popIn|popOut|slideUp|slideDown|slideLeft|slideRight|flipX|flipY|rotateIn|rotateOut|bounceIn|bounceOut|elastic|spring|none|auto|center|top|bottom|left|right|smooth|linear|bounce|back|power1|power2|power3|power4|expo|circ|sine|steps|slow|custom|in|out|inOut|typewriter|reveal|split|wave|scramble|draw|morph|liquid|gooey|magnetic|parallax|tilt|ripple|trail|blob|true|false)\\b"
+        }
+      ]
+    },
+    "selectors": {
+      "patterns": [
+        {
+          "name": "entity.name.tag.glide",
+          "match": "\\.[a-zA-Z][a-zA-Z0-9_-]*"
+        },
+        {
+          "name": "entity.name.tag.id.glide",
+          "match": "#[a-zA-Z][a-zA-Z0-9_-]*"
+        },
+        {
+          "name": "variable.language.glide",
+          "match": "\\b(html|body|div|span|section|header|footer|nav|main|article|aside|h1|h2|h3|h4|h5|h6|p|a|img|button|input|form|ul|li|svg|canvas)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "match": "(-?\\b\\d+(?:\\.\\d+)?)(s|ms|px|%|deg|rem|em|vh|vw)\\b",
+          "captures": {
+            "1": { "name": "constant.numeric.glide" },
+            "2": { "name": "keyword.other.unit.glide" }
+          }
+        },
+        {
+          "name": "constant.numeric.glide",
+          "match": "-?\\b\\d+(?:\\.\\d+)?\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.glide",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.glide",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.glide",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.glide",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.glide",
+          "match": "[+\\-*/=<>!&|]|->|=>"
+        }
+      ]
+    },
+    "blocks": {
+      "patterns": [
+        {
+          "name": "punctuation.definition.block.glide",
+          "match": "[{}]"
+        },
+        {
+          "name": "punctuation.separator.glide",
+          "match": ":"
+        }
+      ]
+    }
+  }
+}

@@ -2,7 +2,8 @@
 
 const KEYWORDS = new Set([
   'config', 'entrance', 'exit', 'scroll', 'hover',
-  'click', 'stagger', 'timeline', 'step', 'properties', 'text', 'loop', 'spring', 'svg', 'cursor', 'transition', 'threed'
+  'click', 'stagger', 'timeline', 'step', 'properties', 'text', 'loop', 'spring', 'svg', 'cursor', 'transition', 'threed',
+  'morph', 'physics'
 ]);
 
 const TOKEN = {

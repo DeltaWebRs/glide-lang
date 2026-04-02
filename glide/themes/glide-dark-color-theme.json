@@ -1,0 +1,86 @@
+{
+  "name": "Glide Dark",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#0f1117",
+    "editor.foreground": "#e2e8f0",
+    "editorLineNumber.foreground": "#4a5568",
+    "editorCursor.foreground": "#7c6aff",
+    "editor.selectionBackground": "#7c6aff33",
+    "editor.lineHighlightBackground": "#1a1d2e"
+  },
+  "tokenColors": [
+    {
+      "name": "Glide Keywords",
+      "scope": "keyword.control.glide",
+      "settings": {
+        "foreground": "#7c6aff",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Glide Properties",
+      "scope": "support.type.property-name.glide",
+      "settings": {
+        "foreground": "#63b3ed"
+      }
+    },
+    {
+      "name": "Glide Values",
+      "scope": "support.constant.glide",
+      "settings": {
+        "foreground": "#68d391"
+      }
+    },
+    {
+      "name": "Glide Selectors Class",
+      "scope": "entity.name.tag.glide",
+      "settings": {
+        "foreground": "#f6ad55"
+      }
+    },
+    {
+      "name": "Glide Selectors ID",
+      "scope": "entity.name.tag.id.glide",
+      "settings": {
+        "foreground": "#fc8181"
+      }
+    },
+    {
+      "name": "Glide Numbers",
+      "scope": "constant.numeric",
+      "settings": {
+        "foreground": "#b794f4"
+      }
+    },
+    {
+      "name": "Glide Comments",
+      "scope": "comment.line.double-slash.glide, comment.block.glide",
+      "settings": {
+        "foreground": "#4a5568",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Glide Strings",
+      "scope": "string.quoted.double.glide, string.quoted.single.glide",
+      "settings": {
+        "foreground": "#fbd38d"
+      }
+    },
+    {
+      "name": "Glide Units",
+      "scope": "keyword.other.unit.glide",
+      "settings": {
+        "foreground": "#76e4f7"
+      }
+    },
+    {
+      "name": "Glide Operators",
+      "scope": "keyword.operator.glide",
+      "settings": {
+        "foreground": "#e2e8f0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "glide",
+  "displayName": "Glide",
+  "description": "Animations as a language, not as code.",
+  "version": "0.0.1",
+  "publisher": "DeltaWebRs",
+  "icon": "icon.png",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DeltaWebRs/glide-lang"
+  },
+  "keywords": ["glide", "animation", "gsap", "dsl", "web animation"],
+  "engines": {
+    "vscode": "^1.110.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "glide",
+      "aliases": ["Glide", "glide"],
+      "extensions": [".glide"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "glide",
+      "scopeName": "source.glide",
+      "path": "./syntaxes/glide.tmLanguage.json"
+    }],
+    "snippets": [
+      {
+        "language": "glide",
+        "path": "./snippets/glide.code-snippets"
+      }
+    ],
+    "themes": [
+      {
+        "label": "Glide Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/glide-dark-color-theme.json"
+      }
+    ]
+  }
+}

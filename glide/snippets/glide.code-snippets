@@ -1,0 +1,97 @@
+{
+  "Entrance Animation": {
+    "prefix": "entrance",
+    "body": [
+      "entrance ${1:.selector} {",
+      "  effect: ${2|fadeUp,fadeDown,fadeLeft,fadeRight,fade,zoomIn,popIn|}",
+      "  duration: ${3:0.8s}",
+      "  ease: ${4|smooth,linear,bounce,elastic|}",
+      "  delay: ${5:0s}",
+      "}"
+    ],
+    "description": "Entrance animation block"
+  },
+  "Scroll Animation": {
+    "prefix": "scroll",
+    "body": [
+      "scroll ${1:.selector} {",
+      "  effect: ${2|fadeUp,fadeIn,slideUp,parallax|}",
+      "  trigger: ${3:top center}",
+      "  scrub: ${4|true,false|}",
+      "  duration: ${5:1s}",
+      "}"
+    ],
+    "description": "Scroll-triggered animation block"
+  },
+  "Hover Animation": {
+    "prefix": "hover",
+    "body": [
+      "hover ${1:.selector} {",
+      "  effect: ${2|zoomIn,fadeIn,slideUp,bounce|}",
+      "  duration: ${3:0.3s}",
+      "  ease: ${4|smooth,elastic,bounce|}",
+      "}"
+    ],
+    "description": "Hover animation block"
+  },
+  "Stagger Animation": {
+    "prefix": "stagger",
+    "body": [
+      "stagger ${1:.selector} {",
+      "  effect: ${2|fadeUp,slideUp,fadeIn,popIn|}",
+      "  each: ${3:0.1s}",
+      "  ease: ${4|smooth,linear,bounce|}",
+      "}"
+    ],
+    "description": "Stagger animation block"
+  },
+  "Text Animation": {
+    "prefix": "text",
+    "body": [
+      "text ${1:.selector} {",
+      "  effect: ${2|typewriter,reveal,split,wave,scramble|}",
+      "  duration: ${3:1s}",
+      "  ease: ${4|smooth,linear|}",
+      "}"
+    ],
+    "description": "Text animation block"
+  },
+  "Timeline": {
+    "prefix": "timeline",
+    "body": [
+      "timeline ${1:name} {",
+      "  ${2:.selector} {",
+      "    effect: ${3:fadeUp}",
+      "    duration: ${4:0.8s}",
+      "  }",
+      "  then ${5:.selector} {",
+      "    effect: ${6:fadeIn}",
+      "    duration: ${7:0.5s}",
+      "  }",
+      "}"
+    ],
+    "description": "Timeline sequence block"
+  },
+  "Loop Animation": {
+    "prefix": "loop",
+    "body": [
+      "loop ${1:.selector} {",
+      "  effect: ${2|bounce,pulse,spin,float|}",
+      "  duration: ${3:2s}",
+      "  repeat: infinite",
+      "}"
+    ],
+    "description": "Infinite loop animation block"
+  },
+  "Config Block": {
+    "prefix": "config",
+    "body": [
+      "config {",
+      "  default-ease: ${1|smooth,linear,bounce|}",
+      "  default-duration: ${2:0.6s}",
+      "  reduced-motion: ${3|respect,ignore|}",
+      "}"
+    ],
+    "description": "Global Glide config block"
+  }
+}

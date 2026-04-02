@@ -21,6 +21,16 @@ const EFFECT_PRESETS = {
   slideDown: { y: -60 },
 };
 
+const EXIT_PRESETS = {
+  fadeOut:    { opacity: 0 },
+  slideUp:    { y: -60, opacity: 0 },
+  slideDown:  { y: 60, opacity: 0 },
+  slideLeft:  { x: -60, opacity: 0 },
+  slideRight: { x: 60, opacity: 0 },
+  zoomOut:    { scale: 0.8, opacity: 0 },
+  popOut:     { scale: 0, opacity: 0 },
+};
+
 const PASSTHROUGH_KEYS = new Set([
   'x', 'y', 'opacity', 'scale', 'rotation', 'rotate',
   'skewX', 'skewY', 'width', 'height',
@@ -46,7 +56,9 @@ function nodeToNumber(node) {
 }
 
 // Priority: propsBlock > effect preset > inline passthrough
-function buildAnimProps(properties, propsBlock) {
+// presetMap defaults to EFFECT_PRESETS; pass EXIT_PRESETS for exit animations
+function buildAnimProps(properties, propsBlock, presetMap = null) {
+  const map    = presetMap ?? EFFECT_PRESETS;
   const result = {};
 
   // Lowest: inline passthrough keys
@@ -58,8 +70,8 @@ function buildAnimProps(properties, propsBlock) {
 
   // Middle: named effect preset
   const eff = (properties || {})['effect'];
-  if (eff && eff.type === 'Ident' && EFFECT_PRESETS[eff.value]) {
-    Object.assign(result, EFFECT_PRESETS[eff.value]);
+  if (eff && eff.type === 'Ident' && map[eff.value]) {
+    Object.assign(result, map[eff.value]);
   }
 
   // Highest: explicit properties { } block
@@ -102,18 +114,24 @@ function serializeBlock(obj, indent = '') {
 
 function genEntranceExit(node, defaultEase, defaultDuration) {
   const { kind, selector, properties, propsBlock } = node;
-  const sel      = JSON.stringify(selector);
-  const anim     = buildAnimProps(properties, propsBlock);
+  const sel        = JSON.stringify(selector);
+  const isExit     = kind === 'exit';
+  const presets    = isExit ? EXIT_PRESETS : EFFECT_PRESETS;
   const effectNode = properties['effect'];
-  if (effectNode && !EFFECT_PRESETS[effectNode.value] && Object.keys(anim).length === 0 && !propsBlock) {
-    console.warn(`[Glide] Unknown effect "${effectNode.value}" on ${selector}`);
+
+  // For exit, inject EXIT_PRESETS into buildAnimProps by temporarily merging
+  const anim = buildAnimProps(properties, propsBlock, isExit ? EXIT_PRESETS : null);
+
+  if (effectNode && !presets[effectNode.value]) {
+    console.warn(`[Glide] Unknown ${isExit ? 'exit' : 'entrance'} effect "${effectNode.value}" on ${selector}`);
   }
-  const duration = nodeToNumber(properties['duration']) ?? defaultDuration;
-  const ease     = resolveEase(properties['ease'], defaultEase);
+
+  const duration  = nodeToNumber(properties['duration']) ?? defaultDuration;
+  const ease      = resolveEase(properties['ease'], defaultEase);
   const gsapProps = { ...anim, duration, ease };
   const delayNode = properties['delay'];
   if (delayNode) gsapProps.delay = nodeToNumber(delayNode);
-  const method = kind === 'exit' ? 'to' : 'from';
+  const method = isExit ? 'to' : 'from';
   return [`gsap.${method}(${sel}, ${serializeBlock(gsapProps)});`, ''];
 }
 
@@ -122,7 +140,7 @@ function genScroll(node, defaultEase, defaultDuration) {
   const sel      = JSON.stringify(selector);
   const anim     = buildAnimProps(properties, propsBlock);
   const effectNode = properties['effect'];
-  if (effectNode && !EFFECT_PRESETS[effectNode.value] && Object.keys(anim).length === 0 && !propsBlock) {
+  if (effectNode && !EFFECT_PRESETS[effectNode.value]) {
     console.warn(`[Glide] Unknown effect "${effectNode.value}" on ${selector}`);
   }
   const duration = nodeToNumber(properties['duration']) ?? defaultDuration;
@@ -297,6 +315,10 @@ function genTransition(node, defaultEase, defaultDuration) {
   const directionNode = properties['direction'];
   const direction     = directionNode ? directionNode.value : 'left';
 
+  if (!['fade', 'slide', 'curtain'].includes(effect)) {
+    console.warn(`[Glide] Unknown transition effect "${effect}" — falling back to fade`);
+  }
+
   const lines = [
     `(function initPageTransitions() {`,
     `  let overlay = document.getElementById("glide-overlay");`,
@@ -343,6 +365,17 @@ function genTransition(node, defaultEase, defaultDuration) {
       `  }`,
       `  function exitAnim() {`,
       `    gsap.fromTo(overlay, { scaleY: 1, transformOrigin: "bottom" }, { scaleY: 0, duration: ${duration}, ease: ${JSON.stringify(ease)} });`,
+      `  }`,
+    );
+  } else {
+    // Fallback to fade for unknown effects
+    lines.push(
+      `  gsap.set(overlay, { opacity: 0 });`,
+      `  function enterAnim(onComplete) {`,
+      `    gsap.to(overlay, { opacity: 1, duration: 0.4, ease: "power2.out", onComplete });`,
+      `  }`,
+      `  function exitAnim() {`,
+      `    gsap.to(overlay, { opacity: 0, duration: 0.4, ease: "power2.out" });`,
       `  }`,
     );
   }
@@ -447,6 +480,9 @@ function genSVG(node, defaultEase, defaultDuration, plugins) {
   if (effect === 'morph') {
     plugins.add('MorphSVGPlugin');
     const toNode  = properties['to'];
+    if (!toNode) {
+      console.warn(`[Glide] morph on ${selector} missing "to" property — animation will not work`);
+    }
     const toValue = toNode ? toNode.value : '';
     const gsapProps = { morphSVG: toValue, duration, ease };
     if (delayNode) gsapProps.delay = nodeToNumber(delayNode);
@@ -467,9 +503,11 @@ function genSpring(node, defaultDuration) {
   const { selector, properties } = node;
   const sel       = JSON.stringify(selector);
   const anim      = buildAnimProps(properties, node.propsBlock);
-  const stiffness = nodeToNumber(properties['stiffness']) ?? 100;
+  let stiffness   = nodeToNumber(properties['stiffness']) ?? 100;
   const damping   = nodeToNumber(properties['damping'])   ?? 10;
   const mass      = nodeToNumber(properties['mass'])      ?? 1;
+
+  if (!stiffness || stiffness <= 0) stiffness = 100;
 
   const duration  = Math.sqrt(mass / stiffness) * 2;
   const amplitude = 1;
@@ -580,8 +618,11 @@ function generate(ast) {
     if (p['reduced-motion'])   reducedMotion   = p['reduced-motion'].value === 'respect' || p['reduced-motion'].value === true;
   }
 
-  const lastTransition = [...ast.body].reverse()
-    .find(n => n.type === 'AnimationBlock' && n.kind === 'transition');
+  const transitionBlocks = ast.body.filter(n => n.type === 'AnimationBlock' && n.kind === 'transition');
+  if (transitionBlocks.length > 1) {
+    console.warn(`[Glide] Multiple transition blocks found — only the last one will be used.`);
+  }
+  const lastTransition = transitionBlocks[transitionBlocks.length - 1] ?? null;
 
   const plugins    = new Set();
   const animLines  = [];

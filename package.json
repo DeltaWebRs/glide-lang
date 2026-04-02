@@ -1,5 +1,5 @@
 {
-  "name": "@glide-lang/compiler",
+  "name": "glide-lang",
   "version": "0.1.0",
   "description": "Animations as a language, not as code.",
   "main": "src/index.js",

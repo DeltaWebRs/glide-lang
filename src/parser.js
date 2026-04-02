@@ -3,7 +3,10 @@
 const { tokenize } = require('./lexer');
 const { TOKEN } = require('./lexer');
 
-const ANIMATION_KINDS = new Set(['entrance', 'exit', 'scroll', 'hover', 'click', 'stagger', 'text', 'loop', 'spring', 'svg', 'cursor', 'transition', 'threed']);
+const ANIMATION_KINDS = new Set(['entrance', 'exit', 'scroll', 'hover', 'click', 'stagger', 'text', 'loop', 'spring', 'svg', 'cursor', 'transition', 'threed', 'morph', 'physics']);
+
+// Aliases: map these kinds to their canonical generator kind
+const KIND_ALIASES = { morph: 'svg', physics: 'spring' };
 
 function parse(tokens) {
   let pos = 0;
@@ -28,6 +31,7 @@ function parse(tokens) {
       case TOKEN.NUMBER:     return { type: 'Number',   value: Number(tok.value) };
       case TOKEN.BOOLEAN:    return { type: 'Boolean',  value: tok.value === 'true' };
       case TOKEN.IDENTIFIER: return { type: 'Ident',    value: tok.value };
+      case TOKEN.KEYWORD:    return { type: 'Ident',    value: tok.value };
       case TOKEN.SELECTOR:   return { type: 'Selector', value: tok.value };
       default:
         throw new Error(`Unexpected value token ${tok.type} "${tok.value}" at ${tok.line}:${tok.col}`);
@@ -86,7 +90,12 @@ function parse(tokens) {
     }
 
     expect(TOKEN.RBRACE);
-    return { type: 'AnimationBlock', kind, selector: selTok.value, properties, propsBlock };
+    const resolvedKind = KIND_ALIASES[kind] ?? kind;
+    // When using an alias block type, inject the matching effect if none was specified
+    if (kind === 'morph' && !properties['effect']) {
+      properties['effect'] = { type: 'Ident', value: 'morph' };
+    }
+    return { type: 'AnimationBlock', kind: resolvedKind, selector: selTok.value, properties, propsBlock };
   }
 
   function parseTimelineBlock() {
@@ -120,10 +129,10 @@ function parse(tokens) {
 
     if (tok.value === 'config') {
       body.push(parseConfigBlock());
-    } else if (ANIMATION_KINDS.has(tok.value)) {
-      body.push(parseAnimationBlock(tok.value));
     } else if (tok.value === 'timeline') {
       body.push(parseTimelineBlock());
+    } else if (ANIMATION_KINDS.has(tok.value)) {
+      body.push(parseAnimationBlock(tok.value));
     } else {
       advance();
     }
