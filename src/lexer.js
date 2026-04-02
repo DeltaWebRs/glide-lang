@@ -2,7 +2,7 @@
 
 const KEYWORDS = new Set([
   'config', 'entrance', 'exit', 'scroll', 'hover',
-  'click', 'stagger', 'timeline', 'step', 'properties'
+  'click', 'stagger', 'timeline', 'step', 'properties', 'text', 'loop', 'spring', 'svg', 'cursor', 'transition', 'threed'
 ]);
 
 const TOKEN = {
@@ -95,6 +95,13 @@ function tokenize(source) {
         while (i < source.length && /[\w-]/.test(source[i])) { sel += source[i++]; }
       }
       tokens.push(new Token(TOKEN.SELECTOR, sel, line, startCol));
+      continue;
+    }
+
+    // Special keyword: "3d" in .glide syntax maps to KEYWORD "threed"
+    if (ch === '3' && peek(1) === 'd' && (i + 2 >= source.length || !/\w/.test(source[i + 2]))) {
+      tokens.push(new Token(TOKEN.KEYWORD, 'threed', line, startCol));
+      i += 2;
       continue;
     }
 

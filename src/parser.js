@@ -3,7 +3,7 @@
 const { tokenize } = require('./lexer');
 const { TOKEN } = require('./lexer');
 
-const ANIMATION_KINDS = new Set(['entrance', 'exit', 'scroll', 'hover', 'click', 'stagger']);
+const ANIMATION_KINDS = new Set(['entrance', 'exit', 'scroll', 'hover', 'click', 'stagger', 'text', 'loop', 'spring', 'svg', 'cursor', 'transition', 'threed']);
 
 function parse(tokens) {
   let pos = 0;

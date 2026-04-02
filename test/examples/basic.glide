@@ -46,3 +46,127 @@ timeline pageLoad {
   step { target: .headline, effect: fadeUp,    duration: 1s }
   step { target: .cta,      effect: popIn,     ease: bounce }
 }
+3d .card {
+  effect: flip
+  duration: 0.6s
+  ease: smooth
+}
+3d .cube {
+  effect: rotate3d
+  rotateX: 45
+  rotateY: 90
+  duration: 1s
+}
+3d .hero {
+  effect: tilt
+  strength: 20
+}
+3d .scene {
+  effect: depth
+  z: -200
+  duration: 0.8s
+}
+transition page {
+  effect: fade
+  duration: 0.4s
+}
+transition page {
+  effect: slide
+  direction: left
+  duration: 0.5s
+  ease: smooth
+}
+transition page {
+  effect: curtain
+  duration: 0.6s
+  ease: snap
+}
+cursor .custom-cursor {
+  effect: follow
+  ease: smooth
+  speed: 0.1
+}
+cursor .cursor-dot {
+  effect: magnetic
+  target: ".btn"
+  strength: 0.3
+}
+cursor .cursor {
+  effect: trail
+  length: 8
+  ease: linear
+}
+svg .icon {
+  effect: draw
+  duration: 1.5s
+  ease: smooth
+}
+svg .logo {
+  effect: draw
+  duration: 2s
+  delay: 0.3s
+}
+svg .shape {
+  effect: morph
+  to: "#shape-2"
+  duration: 0.8s
+}
+svg .path {
+  effect: dash
+  duration: 1s
+  ease: linear
+}
+spring .ball {
+  y: 200
+  stiffness: 100
+  damping: 10
+}
+spring .card {
+  scale: 1.05
+  stiffness: 200
+  damping: 20
+}
+spring .menu {
+  x: 300
+  stiffness: 80
+  damping: 12
+  mass: 1.5
+}
+loop .spinner {
+  rotate: 360
+  duration: 1s
+  ease: linear
+}
+loop .pulse {
+  effect: pulse
+  duration: 1s
+}
+loop .bounce-ball {
+  effect: bounce
+  duration: 0.6s
+}
+loop .breathe {
+  scale: 1.1
+  duration: 2s
+  ease: smooth
+  yoyo: true
+}
+text .hero-title {
+  effect: typewriter
+  duration: 2s
+}
+text .headline {
+  effect: reveal
+  duration: 0.8s
+  ease: smooth
+}
+text .letters {
+  effect: splitLetters
+  each: 0.05s
+  ease: back
+}
+text .words {
+  effect: splitWords
+  each: 0.08s
+  ease: smooth
+}
