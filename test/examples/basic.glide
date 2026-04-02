@@ -1,0 +1,48 @@
+config {
+  default-ease: smooth
+  default-duration: 0.6s
+  reduced-motion: respect
+}
+entrance .hero {
+  effect: fadeUp
+  duration: 0.8s
+  delay: 0.2s
+}
+scroll .about {
+  effect: fadeUp
+  trigger: "top 80%"
+}
+scroll .parallax-bg {
+  y: -100
+  trigger: "top bottom"
+  end: "bottom top"
+  scrub: true
+}
+hover .button {
+  scale: 1.08
+  duration: 0.25s
+  ease: back
+}
+click .menu-icon {
+  rotate: 45
+  duration: 0.3s
+}
+stagger .cards {
+  effect: fadeUp
+  each: 0.12s
+  from: start
+}
+entrance .custom {
+  properties {
+    opacity: 0
+    x: -200
+  }
+  duration: 0.8s
+  ease: smooth
+}
+timeline pageLoad {
+  step { target: .logo,     effect: fade }
+  step { target: .navbar,   effect: slideDown, delay: 0.3s }
+  step { target: .headline, effect: fadeUp,    duration: 1s }
+  step { target: .cta,      effect: popIn,     ease: bounce }
+}

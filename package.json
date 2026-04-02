@@ -1,0 +1,8 @@
+{
+  "name": "@glide-lang/compiler",
+  "version": "0.1.0",
+  "description": "Animations as a language, not as code.",
+  "main": "src/index.js",
+  "bin": { "glide": "src/cli.js" },
+  "license": "MIT"
+}
